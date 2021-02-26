@@ -1,0 +1,66 @@
+# API KEY
+apiVersion: passport/v1
+kind: ApiKey
+metadata:
+  name: auth-apikey
+spec:
+  name: Secret Api Key For Mailer
+  policies:
+    - BucketFullAccess
+    - IdentityFullAccess
+---
+# FUNCTION
+apiVersion: function/v1
+kind: Function
+metadata:
+  name: auth
+spec:
+  title: Auth API
+  description: "2FA user authentication"
+  timeout: 10
+  code: ./function/triggers.js
+  runtime:
+    name: Node
+    language: Javascript
+  environment:
+    - name: AUTH_APIKEY
+      valueFrom:
+        resourceFieldRef:
+          apiKeyName: auth-apikey
+    - name: MAILER_BUCKET_ID
+      value: ""
+    - name: USER_BUCKET_ID
+      value: ""
+  dependency:
+    - name: "@spica-devkit/bucket"
+      version: latest
+    - name: "@spica-devkit/identity"
+      version: latest
+    - name: "@spica-devkit/database"
+      version: latest
+---
+# TRIGGER - REGISTER
+apiVersion: function/v1
+kind: Trigger
+metadata:
+  name: auth-register
+spec:
+  name: default
+  func: auth
+  type: http
+  httpOptions:
+    method: post
+    path: /register
+---
+# TRIGGER - VERIFY
+apiVersion: function/v1
+kind: Trigger
+metadata:
+  name: auth-verify
+spec:
+  name: default
+  func: auth
+  type: http
+  httpOptions:
+    method: get
+    path: /verify
