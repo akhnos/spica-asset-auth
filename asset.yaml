@@ -49,7 +49,7 @@ spec:
   func: auth
   type: http
   httpOptions:
-    method: post
+    method: Post
     path: /register
 ---
 # TRIGGER - VERIFY
@@ -58,9 +58,9 @@ kind: Trigger
 metadata:
   name: auth-verify
 spec:
-  name: default
+  name: verifyRegistration
   func: auth
   type: http
   httpOptions:
-    method: get
+    method: Get
     path: /verify
