@@ -3,7 +3,7 @@ import * as Identity from "@spica-devkit/identity";
 import {database, close, ObjectId} from "@spica-devkit/database";
 
 /*
-    1. To use this asset you need to create activated:boolean (default: false) field in your user bucket.
+    1. To use this asset you need to create identity_id:string and activated:boolean (default: false) field in your user bucket.
     2. You should install a mail asset, we recommend "Mailer"
     3. Please customize everywhere you see CUSTOMIZED regarding your project.
     4. This function is batching-ready, so you can enable batching
@@ -26,14 +26,7 @@ export default async function(req, res) {
                 "email": identifier,
                 "first_name": firstName,
                 "last_name": lastName,
-                "type": "user",
-                "about_me": "",
-                "interests": [],
-                "is_logged_in": false,
-                "type": "user",
-                "blocked_users": [],
-                "notifications": true
-            };
+            }; // You can enter your user bucket fields you want to set
     // -------
 
     if(identifier && password){
@@ -59,11 +52,12 @@ export default async function(req, res) {
             close()
 
             // ------- CUSTOMIZED
+            // If you want to use Mailer asset, you need to enter your template name and variables
             Bucket.data.insert(mailerBucketId, {
-                "title": `User Registration ${identifier}`,
-                "template": "register-1",
-                "variables": `{"user_name": "${identifier}","id": "${user._id}"}`,
-                "emails": [identifier]
+                "title": `User Registration ${identifier}`, // You don't need to change
+                "template": "register-1", // You can change here
+                "variables": `{"user_name": "${identifier}","id": "${user._id}"}`, // You can change here
+                "emails": [identifier] // Don't change
             });
             // -------
 
