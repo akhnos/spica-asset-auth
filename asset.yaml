@@ -31,6 +31,8 @@ spec:
       value: ""
     - name: USER_BUCKET_ID
       value: ""
+    - name: DEFAULT_POLICY_ID
+      value: ""
   dependency:
     - name: "@spica-devkit/bucket"
       version: latest
@@ -64,3 +66,16 @@ spec:
   httpOptions:
     method: Get
     path: /verify
+---
+# TRIGGER - REACTIVATE
+apiVersion: function/v1
+kind: Trigger
+metadata:
+  name: auth-reactivate
+spec:
+  name: reactivate
+  func: auth
+  type: http
+  httpOptions:
+    method: Get
+    path: /reactivate
