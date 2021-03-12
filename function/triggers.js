@@ -38,7 +38,7 @@ export default async function (req, res) {
       return err;
     });
 
-    if (identity.id) {
+    if (identity._id) {
       let user = await Bucket.data.insert(usersBucketId, {
         ...userObject,
         identity_id: identity._id,
@@ -118,13 +118,14 @@ export async function reactivate({ query }, res) {
     });
 
   if (user && user._id && !user['activated']) {
+      // ------- CUSTOMIZED
     await Bucket.data.insert(mailerBucketId, {
       title: `User Registration ${query.identifier}`,
-      template: 'registration-1',
+      template: 'register-reactivate-1',
       variables: `{"username": "${query.identifier}","user_id": "${user._id}"}`,
       email: [query.identifier],
     });
-
+    // -------
     return res
       .status(200)
       .send({ message: 'Registration restarted', data: user._id });
